@@ -1,0 +1,6 @@
+platforms :ruby do
+  #gem 'mysql',        '~> 2.9'
+  gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
+  gem 'ruby-oci8', '~> 2.1.0'
+  gem 'activerecord', '~> 4.2'
+end
