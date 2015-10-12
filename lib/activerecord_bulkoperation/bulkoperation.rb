@@ -37,13 +37,13 @@ module ActiveRecord
         @sequence_cache.next_value
       end
 
-      def find_foreign_master_tables
+      def find_foreign_master_tables(table_name)
         arr = connection.find_foreign_master_tables_sql_array(table_name)
         sql = sanitize_sql(arr)
         Array(find_by_sql(sql)).map { |e|e.table_name }
       end
 
-      def find_foreign_detail_tables
+      def find_foreign_detail_tables(table_name)
         arr = connection.find_foreign_detail_tables_sql_array(table_name)
         sql = sanitize_sql(arr)
         Array(find_by_sql(sql)).map { |e|e.table_name }

@@ -45,7 +45,14 @@ module ActiveRecord
         return :float   if  column.sql_type.index('NUMBER') and column.sql_type.count(',') == 1
         fail ArgumentError.new("type #{column.sql_type} of #{column.name} is unsupported")
       end
+      
+      def foreign_detail_tables
+        @foreign_detail_tables ||= find_foreign_detail_tables(table_name)
+      end
 
+      def foreign_master_tables
+        @foreign_master_tables ||= find_foreign_master_tables(table_name)
+      end
       private
 
       def check_group(group)
@@ -169,7 +176,6 @@ module ActiveRecord
 
         count
       end
-
     end
   end
 end
