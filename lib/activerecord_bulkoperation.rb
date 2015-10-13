@@ -9,7 +9,7 @@ class ActiveRecord::Base
 end
 
 ActiveSupport.on_load(:active_record_connection_established) do |connection_pool|
-  if !ActiveRecord.const_defined?(:Bulkoperation, false) #|| !ActiveRecord::Import.respond_to?(:load_from_connection_pool)
+  if !ActiveRecord.const_defined?(:Bulkoperation, false) || !ActiveRecord::Bulkoperation.respond_to?(:load_from_connection_pool)
     require "activerecord_bulkoperation/base"
   end
 
