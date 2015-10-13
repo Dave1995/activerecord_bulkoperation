@@ -12,9 +12,13 @@ module ActiveRecord
           fail ArgumentError.new('Array expected') unless values.is_a? Array
           values = [values] unless values.select { |i| not i.is_a? Array }.empty?
 
-          fail ArgumentError.new('types array must have same length as the arrays in values') unless values.select { |i| not i.count == types.count }.empty?
+          unless values.select { |i| not i.count == types.count }.empty?
+            fail ArgumentError.new('types.count must be equal to arr.count for every arr in values')
+          end
 
-          fail 'Operation is provided only on Oracle connections.' unless connection.adapter_name == 'Oracle' || connection.adapter_name == 'OracleEnhanced'
+          unless connection.adapter_name == 'Oracle' || connection.adapter_name == 'OracleEnhanced'
+            fail "Operation is provided only on Oracle connections. (adapter_name is #{connection.adapter_name})"
+          end
 
           oci_conn = connection.raw_connection if connected?
           fail 'Unable to access the raw OCI connection.' unless oci_conn          
