@@ -1,6 +1,6 @@
 module ActiveRecord
   module Bulkoperation
-    AdapterPath = "activerecord_bulkoperation/active_record/adapters"
+    AdapterPath = 'activerecord_bulkoperation/active_record/adapters'
 
     def self.base_adapter(adapter)
       case adapter
@@ -14,7 +14,7 @@ module ActiveRecord
 
     # Loads the import functionality for a specific database adapter
     def self.require_adapter(adapter)
-      require File.join(AdapterPath,"/abstract_adapter")
+      require File.join(AdapterPath,'/abstract_adapter')
       begin
         require File.join(AdapterPath,"/#{base_adapter(adapter)}_adapter")
       rescue LoadError
