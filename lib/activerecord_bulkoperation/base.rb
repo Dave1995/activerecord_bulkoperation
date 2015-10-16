@@ -32,11 +32,11 @@ end
 # if MRI or YARV
 puts "RUBY_ENGINE=#{RUBY_ENGINE}, ORACLE_ENHANCED_CONNECTION=#{ORACLE_ENHANCED_CONNECTION}"
 if !defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby'
-  ORACLE_ENHANCED_CONNECTION = :oci
+  ORACLE_ENHANCED_CONNECTION = :oci if ORACLE_ENHANCED_CONNECTION != :oci
   require 'activerecord_bulkoperation/connection_adapters/oracle_enhanced/oci_connection'
 # if JRuby
 elsif RUBY_ENGINE == 'jruby'
-  ORACLE_ENHANCED_CONNECTION = :jdbc
+  ORACLE_ENHANCED_CONNECTION = :jdbc if ORACLE_ENHANCED_CONNECTION != :jdbc
   require 'activerecord_bulkoperation/connection_adapters/oracle_enhanced/jdbc_connection'
 else
   raise "Unsupported Ruby engine #{RUBY_ENGINE}"
@@ -45,6 +45,7 @@ end
 require 'activerecord_bulkoperation/bulkoperation'
 require 'activerecord_bulkoperation/active_record/associations/associations'
 require 'activerecord_bulkoperation/group_operations'
+require 'activerecord_bulkoperation/group_operations_select'
 require 'activerecord_bulkoperation/util/sequence_cache'
 require 'activerecord_bulkoperation/util/entity_hash'
 require 'activerecord_bulkoperation/util/transaction_object'

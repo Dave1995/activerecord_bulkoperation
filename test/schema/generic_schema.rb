@@ -13,7 +13,7 @@ ActiveRecord::Schema.define do
 
   create_table :items, :force => true do |t|
     t.column :itemno, :string
-    t.column :size, :integer
+    t.column :sizen, :integer
     t.column :company, :integer
     t.timestamps null: true
   end

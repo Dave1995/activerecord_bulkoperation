@@ -10,20 +10,20 @@ class FindGroupByTest < ActiveSupport::TestCase
 
   def setup
     puts '- FindGroupByTest.setup(): nu'
-    Item.new( :itemno => 'A', :size => 1, :company => 21).save!
-    Item.new( :itemno => 'B', :size => 2, :company => 22).save!
-    Item.new( :itemno => 'C', :size => 3, :company => 23).save!
-    Item.new( :itemno => 'D', :size => 4, :company => 24).save!
-    Item.new( :itemno => 'E', :size => 5, :company => 25).save!
-    Item.new( :itemno => 'F', :size => 6, :company => 26).save!
-    Item.new( :itemno => 'G', :size => 7, :company => 27).save!
-    Item.new( :itemno => 'H', :size => 8, :company => 28).save!
-    Item.new( :itemno => 'I', :size => 9, :company => 29).save!
-    Item.new( :itemno => 'J', :size => 10, :company => 30).save!
-    Item.new( :itemno => 'K', :size => 11, :company => 31).save!
-    Item.new( :itemno => 'L', :size => 12, :company => 32).save!
-    Item.new( :itemno => 'M', :size => 13, :company => 33).save!
-    Item.new( :itemno => 'N', :size => 14, :company => 34).save!
+    Item.new( :itemno => 'A', :sizen => 1, :company => 21).save!
+    Item.new( :itemno => 'B', :sizen => 2, :company => 22).save!
+    Item.new( :itemno => 'C', :sizen => 3, :company => 23).save!
+    Item.new( :itemno => 'D', :sizen => 4, :company => 24).save!
+    Item.new( :itemno => 'E', :sizen => 5, :company => 25).save!
+    Item.new( :itemno => 'F', :sizen => 6, :company => 26).save!
+    Item.new( :itemno => 'G', :sizen => 7, :company => 27).save!
+    Item.new( :itemno => 'H', :sizen => 8, :company => 28).save!
+    Item.new( :itemno => 'I', :sizen => 9, :company => 29).save!
+    Item.new( :itemno => 'J', :sizen => 10, :company => 30).save!
+    Item.new( :itemno => 'K', :sizen => 11, :company => 31).save!
+    Item.new( :itemno => 'L', :sizen => 12, :company => 32).save!
+    Item.new( :itemno => 'M', :sizen => 13, :company => 33).save!
+    Item.new( :itemno => 'N', :sizen => 14, :company => 34).save!
   end
 
   def test_items_exist
@@ -32,12 +32,12 @@ class FindGroupByTest < ActiveSupport::TestCase
     i1 = Item.find_by( itemno: 'A')
     assert_not_nil( i1 )
     assert_equal( 'A', i1.itemno)
-    assert_equal( 1, i1.size)
+    assert_equal( 1, i1.sizen)
     assert_equal( 21, i1.company)
     i2 = Item.find_by( itemno: 'B')
     assert_not_nil( i2 )
     assert_equal( 'B', i2.itemno)
-    assert_equal( 2, i2.size)
+    assert_equal( 2, i2.sizen)
     assert_equal( 22, i2.company)
 
     assert_equal( 23, Item.find_by( itemno: 'C').company)
@@ -54,6 +54,52 @@ class FindGroupByTest < ActiveSupport::TestCase
     assert_equal( 34, Item.find_by( itemno: 'N').company)
   end
 
+  def test_find_group_by_params_test
+    puts '- FindGroupByTest.test_find_group_by_params_test(): nunu'
+    column_set = [ :itemno, :sizen, :company ]
+    assert_raises { Item.where_tuple(nil, nil) }
+    assert_raises { Item.where_tuple(column_set, nil) }
+    assert_raises { Item.where_tuple([], nil) }
+    assert_raises { Item.where_tuple(['string', 'strang'], nil) }
+    assert_raises { Item.where_tuple(column_set, []) }
+    assert_raises { Item.where_tuple(column_set, ['strong']) }
+  end
+
+  def test_find_group_by
+    puts '- FindGroupByTest.test_find_group_by(): nunu'
+
+    i1 = Item.find_by( itemno: 'A')
+    i2 = Item.find_by( itemno: 'B')
+    i3 = Item.find_by( itemno: 'C')
+
+    is = Item.find_group_by( :itemno => [ 'A', 'B', 'C'], :sizen => [1, 2, 3], :company => [21, 22, 23] )
+
+    assert_not_nil( is )
+    assert_equal( 3, is.count)
+    assert_includes( is, i1)
+    assert_includes( is, i2)
+    assert_includes( is, i3)
+
+    is = Item.find_group_by( :itemno => [ 'A', 'B', 'C'], :sizen => [2, 3, 1], :company => [21, 22, 23] )
+    assert_not_nil( is )
+    assert_equal( 0, is.count)
+
+    is = Item.find_group_by( :itemno => [ 'A', 'B', 'C'], :sizen => [1, 2, 3], :company => [21, 22, 24] )
+    assert_not_nil( is )
+    assert_equal( 2, is.count)
+    assert_includes( is, i1)
+    assert_includes( is, i2)
+
+    is = Item.find_group_by( :itemno => [ 'A', 'B', 'C'], :sizen => [1, 2, 3], :company => [23, 23, 23] )
+    assert_not_nil( is )
+    assert_equal( 1, is.count)
+    assert_includes( is, i3)
+
+    is = Item.find_group_by( :itemno => [ 'A', 'A', 'A'], :sizen => [1, 2, 3], :company => [21, 22, 23] )
+    assert_equal( 1, is.count)
+    assert_includes( is, i1)
+  end
+
   def test_find_by_multiple_columns
     puts '- FindGroupByTest.test_find_by_multiple_columns(): nunu'
 
@@ -61,10 +107,8 @@ class FindGroupByTest < ActiveSupport::TestCase
     i2 = Item.find_by( itemno: 'B')
     i3 = Item.find_by( itemno: 'C')
 
-    # this is how it was done before. With rails4 this is not necessary anymore
-    #is = Item.find_group_by( :itemno => ['A', 'B', 'C'], :size => [1, 2, 3], :company => [21, 22, 23])
-    # now ActiveRecord has an easy way to do this
-    is = Item.where( { itemno: ['A', 'B', 'C'], size: [1, 2, 3], company: [21, 22, 23] } )
+    column_set = [ :itemno, :sizen, :company ]
+    is = Item.where_tuple( column_set, [ ['A', 1, 21], ['B', 2, 22], ['C', 3, 23] ] )
 
     assert_not_nil( is )
     assert_equal( 3, is.count)
@@ -72,18 +116,22 @@ class FindGroupByTest < ActiveSupport::TestCase
     assert_equal( i2, is[1])
     assert_equal( i3, is[2])
 
-    is = Item.where( { itemno: ['A', 'B', 'C'], size: [1, 2, 4], company: [21, 22, 23] } )
+    is = Item.where_tuple( column_set, [ ['A', 2, 21], ['B', 3, 22], ['C', 1, 23] ] )
+    assert_not_nil( is )
+    assert_equal( 0, is.count)
+
+    is = Item.where_tuple( column_set, [ ['A', 1, 21], ['B', 2, 22], ['C', 3, 24] ] )
     assert_not_nil( is )
     assert_equal( 2, is.count)
     assert_equal( i1, is[0])
     assert_equal( i2, is[1])
 
-    is = Item.where( { itemno: ['A', 'B', 'C'], size: [1, 2, 3], company: [23, 23, 23] } )
+    is = Item.where_tuple( column_set, [ ['A', 1, 23], ['B', 2, 23], ['C', 3, 23] ] )
     assert_not_nil( is )
     assert_equal( 1, is.count)
     assert_equal( i3, is[0])
 
-    is = Item.where( { itemno: ['A', 'B', 'C'], size: [1, 2], company: [21] } )
+    is = Item.where_tuple( column_set, [ ['A', 1, 21], ['A', 2, 22], ['A', 3, 23] ] )
     assert_equal( 1, is.count)
     assert_equal( i1, is[0])
   end
