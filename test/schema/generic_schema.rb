@@ -8,5 +8,11 @@ ActiveRecord::Schema.define do
     #t.integer :group_id, null: false    
     t.timestamps null: true
   end
+  create_table :items, :force => true do |t|
+    t.column :itemno, :string
+    t.column :sizen, :integer
+    t.column :company, :integer
+    t.timestamps null: true
+  end
   #add_foreign_key :test_tables, :groups
 end
