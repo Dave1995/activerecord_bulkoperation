@@ -49,5 +49,6 @@ require 'activerecord_bulkoperation/group_operations_select'
 require 'activerecord_bulkoperation/util/sequence_cache'
 require 'activerecord_bulkoperation/util/entity_hash'
 require 'activerecord_bulkoperation/util/transaction_object'
+require 'activerecord_bulkoperation/util/connection_object'
 require 'activerecord_bulkoperation/util/flush_dirty_objects'
 
