@@ -176,6 +176,56 @@ module ActiveRecord
 
         count
       end
+
+      def insert_on_missing_group( keys, group, options = {} )
+
+        #fail 'the give key array is empty' if keys.empty?
+
+        keys = Array( primary_key ) if keys.nil? || keys.empty?
+
+        sql ="  
+        merge into #{table_name} target 
+        using ( select #{columns.map{|c| ":#{columns.index(c)+1} #{c.name}" }.join(', ')} from dual ) source 
+        on ( #{keys.map{|c| "target.#{c} = source.#{c}" }.join(' and ')}  ) 
+        when not matched then 
+        insert ( #{columns.map{|c| c.name }.join(', ')} )  
+        values( #{columns.map{|c| "source.#{c.name}" }.join(', ')} )
+        "
+
+
+        types = columns.map{ |c| to_type_symbol(c) }
+
+        values = []
+
+        for record in group
+
+          row = []
+
+          for c in columns
+            v = record.read_attribute(c.name)
+            row << v
+          end
+
+          values << row
+
+        end
+
+        #puts sql
+        #puts types.join(', ')
+        #puts values.first.join( ', ')
+
+        begin
+          result = execute_batch_update(sql, types, values,false)
+        rescue  => e
+          raise ActiveRecord::StatementInvalid.new( "#{e.message}\n#{sql}" )
+        end
+
+        group.each { |r| r.unset_new_record }
+
+        result
+
+      end
+
     end
   end
 end

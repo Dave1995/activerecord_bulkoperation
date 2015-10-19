@@ -13,14 +13,11 @@ namespace :display do
 end
 task :default => ["display:notice"]
 
-#ADAPTERS = %w(mysql mysql2 em_mysql2 jdbcmysql jdbcpostgresql postgresql sqlite3 seamless_database_pool mysqlspatial mysql2spatial spatialite postgis)
 ADAPTERS = %w(oracle_enhanced)
 ADAPTERS.each do |adapter|
   namespace :test do
     desc "Runs #{adapter} database tests."
     Rake::TestTask.new(adapter) do |t|
-      # FactoryGirl has an issue with warnings, so turn off, so noisy
-      # t.warning = true
       t.test_files = FileList["test/adapters/#{adapter}.rb", "test/*_test.rb", "test/active_record/*_test.rb", "test/#{adapter}/**/*_test.rb"]
     end
     task adapter
