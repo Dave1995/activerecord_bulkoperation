@@ -37,7 +37,7 @@ module ActiveRecord # :nodoc:
         @timeout = 5
         connection = super_checkout
         connection.clear_scheduled_operations if connection.respond_to?('clear_scheduled_operations')
-        logentry_login(connection)
+        #logentry_login(connection)
         start_plsql_profiling(connection)
         connection
       end
