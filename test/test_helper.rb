@@ -21,6 +21,8 @@ else
   require 'active_support/testing/autorun'
 end
 
+require "mocha/test_unit"
+
 ActiveSupport::TestCase.test_order = :sorted
 adapter = ENV["DB_ADAPTER"] || "oracle_enhanced"
 
