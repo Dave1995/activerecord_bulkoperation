@@ -62,7 +62,7 @@ module ActiveRecord
       def extract_options_from_args!(args) #:nodoc:
         args.last.is_a?(Hash) ? args.pop : {}
       end
-
+=begin
       def find_each(*args)
         options =  extract_options_from_args!(args)
         validate_find_options(options)
@@ -77,7 +77,7 @@ module ActiveRecord
           end
         end
       end
-
+=end
       def build_delete_by_primary_key_sql
         keys = primary_key_columns
 
