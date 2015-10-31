@@ -9,14 +9,16 @@ module ActiveRecord
       def find_group_by(args)
         fail 'no hash given, use Table.all() instead' if args.nil? || args.empty? || (not args.is_a?(Hash))
         fail 'args is not a hash of arrays' if args.select { |k,v| k.is_a?(Symbol) || v.is_a?(Array) }.size != args.size
-        tuple_size = args.size
+        
+        conditions = ( args.is_a?(Hash) && args[:conditions] ) || args  
+        tuple_size = conditions.size
         array_size = 0
-        args.each do |k,v|
+        conditions.each do |k,v|
           array_size = v.size unless array_size > 0
           fail 'not all arrays are of the same size' unless v.size == array_size
         end
 
-        symbols = args.keys
+        symbols = conditions.keys
         values = Array.new(array_size) { Array.new(tuple_size) }
 
         # to recurse is golden, to transpose ... divine!
@@ -38,7 +40,7 @@ module ActiveRecord
         end
 
         tuple_size = symbols_tuple.size
-        fail "don't use this method if you're not looking for tuples." if tuple_size < 2
+        #fail "don't use this method if you're not looking for tuples." if tuple_size < 2
 
         if values_tuples.nil? || values_tuples.size == 0 || (not values_tuples.is_a?(Array)) || (not values_tuples.select { |s| not s.is_a?(Array) }.empty?)
           fail 'no values given or not every value is an array'

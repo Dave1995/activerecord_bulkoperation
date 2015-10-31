@@ -56,7 +56,7 @@ module ActiveRecord
       private
 
       def check_group(group)
-        fail ArgumentError.new("Array expected. Got #{group.class.name}.") unless group.is_a? Array or group.is_a? Set
+        fail ArgumentError.new("Array expected. Got #{group.class.name}.") unless group.is_a? Array or group.is_a? Set or group.is_a? ActiveRecord::Relation
         fail ArgumentError.new("only records of #{name} expected. Unexpected #{group.select { |i| not i.is_a? self }.map { |i|i.class.name }.uniq.join(',') } found.") unless group.select { |i| not i.is_a? self }.empty?
       end
 
