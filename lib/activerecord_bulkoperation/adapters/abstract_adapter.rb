@@ -22,7 +22,7 @@ module ActiveRecord
             end
                     
             def rollback_to_savepoint(name = current_savepoint_name)
-              rollback_to_savepoint_without_callback
+              rollback_to_savepoint_without_callback(name)
               connection_listeners.each { |l| l.after_rollback_to_savepoint if l.respond_to?('after_rollback_to_savepoint') }
             end
                     
