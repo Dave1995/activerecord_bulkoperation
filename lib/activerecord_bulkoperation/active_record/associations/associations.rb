@@ -36,7 +36,8 @@ module ActiveRecord
                 # join_base.cached_record = {}
                 @joins.each { |j| j.cached_record = {} }
               end
-              @base_records_in_order << (@base_records_hash[primary_id] = join_base.instantiate(row))
+              #RP TODO check if instantiate call is correct with an empty hash or where to get the 2nd parameter
+              @base_records_in_order << (@base_records_hash[primary_id] = join_base.instantiate(row,{}))
             end
             construct(@base_records_hash[primary_id], @associations, join_associations.dup, row)
           else
