@@ -226,6 +226,83 @@ module ActiveRecord
 
       end
 
+
+      def delete_group(group, options = {})
+        check_group(group)
+
+        optimistic = options[:optimistic]
+        optimistic = true if optimistic.nil?
+
+        to_delete = group.select { |i| not i.new_record? }
+
+        fail NoOrginalRecordFound.new if optimistic and not to_delete.select { |i| not i.orginal_selected_record }.empty?
+
+        sql = optimistic ? build_optimistic_delete_sql : build_delete_by_primary_key_sql
+
+        types  = []
+
+        if optimistic
+
+          for c in columns
+            type = to_type_symbol(c)
+            types << type
+            types << type if c.null
+          end
+
+          types << :string
+
+        else
+
+          keys = primary_key_columns
+
+          for c in keys
+            type = to_type_symbol(c)
+            types << type
+          end
+
+        end
+
+        values = []
+
+        if optimistic
+
+          for record in to_delete
+            row = []
+            orginal = record.orginal_selected_record
+            for c in columns
+
+              v = orginal[  c.name]
+              row << v
+              row << v if c.null
+
+            end
+
+            row << orginal[ 'rowid']
+            values << row
+
+          end
+
+        else
+
+          keys = primary_key_columns
+
+          for record in to_delete
+            row = keys.map { |c| record[ c.name] }
+            values << row
+          end
+
+        end
+
+        count = execute_batch_update(sql, types, values, optimistic)
+
+        count
+
+      rescue ExternalDataChange => e
+        raise e
+      rescue Exception => e
+        raise StatementError.new("#{sql} #{e.message}")
+      end
+
     end
   end
 end
