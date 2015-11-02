@@ -62,22 +62,15 @@ module ActiveRecord
       def extract_options_from_args!(args) #:nodoc:
         args.last.is_a?(Hash) ? args.pop : {}
       end
-=begin
+
       def find_each(*args)
-        options =  extract_options_from_args!(args)
-        validate_find_options(options)
-        set_readonly_option!(options)
-        # records = scoped?(:find, :include) || options[:include] ?
-        #       # find_with_associations(options) :
-        if block_given?
-          if scoped?(:find, :include) || options[:include] then
-            find_each_with_associations(options) { |r| yield r if r }
-          else
-            find_each_by_sql(construct_finder_sql(options)) { |r| yield r if r }
-          end
-        end
+        a = [ :all ]
+        a.concat(args)
+        find( *a ).each do |r|
+          yield r if r 
+        end 
       end
-=end
+
       def build_delete_by_primary_key_sql
         keys = primary_key_columns
 
