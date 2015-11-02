@@ -56,7 +56,7 @@ module ActiveRecord
       end
 
       def find_each_by_sql(sql, &block)
-        connection.select_each(sanitize_sql(sql), "#{name} Load") { |record| yield instantiate(record) }
+        connection.select_each(sanitize_sql(sql), "#{name} Load") { |record| yield instantiate(record,{}) }
       end
 
       def extract_options_from_args!(args) #:nodoc:
