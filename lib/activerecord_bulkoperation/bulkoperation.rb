@@ -64,7 +64,8 @@ module ActiveRecord
       end
 
       def find_each(*args)
-        a = [ :all ]
+        a = []
+        a << :all unless args.first == :all
         a.concat(args)
         find( *a ).each do |r|
           yield r if r 
