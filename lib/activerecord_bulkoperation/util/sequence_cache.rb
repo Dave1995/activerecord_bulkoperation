@@ -9,13 +9,19 @@ module ActiveRecord
         end
 
         def next_value          
-          if(@queue.blank?)
-            fill_queue            
+          while ( value = next_value_from_queue ).nil?
+            fill_queue
           end
-          @queue.pop
+          value 
         end
 
         private
+
+        def next_value_from_queue
+	  @queue.pop(true) 
+        rescue ThreadError => e
+          nil
+        end
 
         def fill_queue
           fetch.each do |f|
@@ -24,7 +30,7 @@ module ActiveRecord
         end
 
         def fetch
-          st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= 10")
+          st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= #{@prefetch}")
           st.map {|r| r['id']}
         end
       end

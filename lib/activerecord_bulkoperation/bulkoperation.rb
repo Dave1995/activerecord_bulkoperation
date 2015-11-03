@@ -83,8 +83,8 @@ module ActiveRecord
       def build_optimistic_delete_sql
         index = 1
         "DELETE FROM #{table_name} " \
-        'WHERE ' +         "#{columns.map { |c| string = build_optimistic_where_element(index, c); index += 1; index += 1 if c.null; string }.join(' AND ') } " +
-        "AND ROWID = :#{index}"
+        'WHERE ' +         "#{columns.map { |c| string = build_optimistic_where_element(index, c); index += 1; index += 1 if c.null; string }.join(' AND ') } " 
+ 
       end
 
       def build_optimistic_update_sql

@@ -226,7 +226,7 @@ module ActiveRecord
 
       end
 
-
+      public
       def delete_group(group, options = {})
         check_group(group)
 
@@ -248,8 +248,6 @@ module ActiveRecord
             types << type
             types << type if c.null
           end
-
-          types << :string
 
         else
 
@@ -277,7 +275,6 @@ module ActiveRecord
 
             end
 
-            row << orginal[ 'rowid']
             values << row
 
           end
