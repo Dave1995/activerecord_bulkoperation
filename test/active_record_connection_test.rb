@@ -36,5 +36,6 @@ class ActiveRecordConnectionTest < ActiveSupport::TestCase
     ActiveRecord::Base.connection.rollback_db_transaction
 
     ActiveRecord::Base.connection.commit_db_transaction
+    ActiveRecord::Base.connection.connection_listeners.clear
   end
 end

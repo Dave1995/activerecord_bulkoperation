@@ -95,5 +95,18 @@ class BulkoperationTest < ActiveSupport::TestCase
 
     assert_equal('test-2',first.author_name)    
   end
+
+  def test_connection_listener_get_called 
+    test_obj = TestTable.new
+    test_obj.author_name = 'test-1'    
+    test_obj.schedule_merge  
+
+    assert_equal(0,TestTable.count)
+    ActiveRecord::Base.connection.commit_db_transaction
+    assert_equal(1,TestTable.count)
+    first = TestTable.first
+    assert_equal('test-1',test_obj.author_name)
+    TestTable.delete_all    
+  end
 end
 
