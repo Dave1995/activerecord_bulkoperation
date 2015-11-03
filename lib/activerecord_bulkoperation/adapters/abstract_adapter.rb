@@ -26,9 +26,9 @@ module ActiveRecord
               connection_listeners.each { |l| l.after_rollback_to_savepoint if l.respond_to?('after_rollback_to_savepoint') }
             end
                     
-            def create_savepoint
+            def create_savepoint(name = current_savepoint_name)
               connection_listeners.each { |l| l.before_create_savepoint if l.respond_to?('before_create_savepoint') }
-              create_savepoint_without_callback
+              create_savepoint_without_callback(name)
             end
           end
         end
