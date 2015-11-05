@@ -54,15 +54,15 @@ module ActiveRecord
         sql = sanitize_sql([sql, table_name.upcase])
         find_by_sql(sql)
       end
-
+=begin
       def find_each_by_sql(sql, &block)
         connection.select_each(sanitize_sql(sql), "#{name} Load") { |record| yield instantiate(record,{}) }
       end
-
+=end
       def extract_options_from_args!(args) #:nodoc:
         args.last.is_a?(Hash) ? args.pop : {}
       end
-
+=begin
       def find_each(*args)
         a = []
         a << :all unless args.first == :all
@@ -71,7 +71,7 @@ module ActiveRecord
           yield r if r 
         end 
       end
-
+=end
       def build_delete_by_primary_key_sql
         keys = primary_key_columns
 
