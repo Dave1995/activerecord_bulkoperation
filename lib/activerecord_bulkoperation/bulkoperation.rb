@@ -167,6 +167,12 @@ module ActiveRecord
       self
     end
 
+    def insert_on_missing( *unique_columns )
+      unique_columns = Array( self.class.primary_key ) if unique_columns.nil? || unique_columns.empty?
+      set_id_from_sequence
+      self.class.insert_on_missing_group( unique_columns, [self] ) > 0
+    end
+
     def schedule_delete
       ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.add_delete(self)
       self
