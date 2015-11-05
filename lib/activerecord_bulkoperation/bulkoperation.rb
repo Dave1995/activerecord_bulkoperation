@@ -195,8 +195,6 @@ module ActiveRecord
         types << type if c.null
       end
 
-      types << :string
-
       binds = self.class.columns.map { |c| read_attribute(c.name) }
 
       get_optimistic_where_binds.each { |v| binds << v }
@@ -220,8 +218,6 @@ module ActiveRecord
         types << type if c.null
       end
 
-      types << :string
-
       self.class.execute_batch_update(sql, types, [binds])
       end
 
@@ -235,7 +231,6 @@ module ActiveRecord
         binds << v if c.null
       end
 
-      binds << orginal_selected_record[ 'rowid']
       binds
     end
 

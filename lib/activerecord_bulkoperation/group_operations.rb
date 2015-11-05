@@ -124,8 +124,6 @@ module ActiveRecord
             types << type if c.null
           end
 
-          #types << :string
-
         else
 
           keys = primary_key_columns
@@ -159,8 +157,6 @@ module ActiveRecord
               row << v if c.null
 
             end
-
-            #row << orginal[ 'rowid']
 
           else
 
@@ -209,10 +205,6 @@ module ActiveRecord
           values << row
 
         end
-
-        #puts sql
-        #puts types.join(', ')
-        #puts values.first.join( ', ')
 
         begin
           result = execute_batch_update(sql, types, values,false)
