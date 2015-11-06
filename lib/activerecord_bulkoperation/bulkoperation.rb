@@ -167,6 +167,12 @@ module ActiveRecord
       self
     end
 
+    def schedule_insert_on_missing( *unique_columns )
+      ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.add_insert_on_missing( unique_columns, self )
+      self
+    end
+
+
     def insert_on_missing( *unique_columns )
       unique_columns = Array( self.class.primary_key ) if unique_columns.nil? || unique_columns.empty?
       set_id_from_sequence
