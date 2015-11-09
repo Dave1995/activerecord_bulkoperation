@@ -1,2 +1,2 @@
-class TestTable < ActiveRecord::Base
+class TestTable < ActiveRecord::Base  
 end

@@ -5,7 +5,7 @@ ActiveRecord::Schema.define do
   end
   create_table :test_tables, :force => true do |t|
     t.column :author_name, :string
-    #t.integer :group_id, null: false    
+    t.integer :group_id
     t.timestamps null: true
   end
   create_table :items, :force => true do |t|

@@ -16,6 +16,19 @@ module ActiveRecord
   end
 
   module Associations
+
+    class CollectionProxy
+      def schedule_merge(record)
+        fk = proxy_association.reflection.foreign_key
+        pk = proxy_association.reflection.active_record_primary_key
+        puts "RP DEBUG reflection #{proxy_association.reflection.inspect}"
+        puts "RP DEBUG fk #{fk.inspect} pk #{pk.inspect}"
+        pk_val = proxy_association.owner.send(pk)
+        record.send("#{fk}=",pk_val)        
+        record.schedule_merge
+      end
+    end
+
     class JoinDependency # :nodoc:
 
         def instantiate_each(row, &block)

@@ -108,5 +108,15 @@ class BulkoperationTest < ActiveSupport::TestCase
     assert_equal('test-1',test_obj.author_name)
     TestTable.delete_all    
   end
+
+  def test_schedule_merge_relation
+        group = Group.new
+    group.schedule_merge    
+    test_obj = TestTable.new
+    test_obj.author_name = 'test-1'
+    group.test_tables.schedule_merge(test_obj)
+    
+    ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush  
+  end
 end
 

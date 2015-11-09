@@ -4,12 +4,10 @@ require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 class FindGroupByTest < ActiveSupport::TestCase
 
   def teardown
-    puts '- FindGroupByTest.teardown(): nununu'
     Item.delete_all
   end
 
   def setup
-    puts '- FindGroupByTest.setup(): nu'
     Item.new( :itemno => 'A', :sizen => 1, :company => 21).save!
     Item.new( :itemno => 'B', :sizen => 2, :company => 22).save!
     Item.new( :itemno => 'C', :sizen => 3, :company => 23).save!
@@ -27,7 +25,6 @@ class FindGroupByTest < ActiveSupport::TestCase
   end
 
   def test_items_exist
-    puts '- FindGroupByTest.test_items_exist(): nunu'
     assert_equal( 14, Item.all.count)
     i1 = Item.find_by( itemno: 'A')
     assert_not_nil( i1 )
@@ -55,7 +52,6 @@ class FindGroupByTest < ActiveSupport::TestCase
   end
 
   def test_find_group_by_params_test
-    puts '- FindGroupByTest.test_find_group_by_params_test(): nunu'
     column_set = [ :itemno, :sizen, :company ]
     assert_raises { Item.where_tuple(nil, nil) }
     assert_raises { Item.where_tuple(column_set, nil) }
@@ -66,7 +62,6 @@ class FindGroupByTest < ActiveSupport::TestCase
   end
 
   def test_find_group_by
-    puts '- FindGroupByTest.test_find_group_by(): nunu'
 
     i1 = Item.find_by( itemno: 'A')
     i2 = Item.find_by( itemno: 'B')
@@ -101,7 +96,6 @@ class FindGroupByTest < ActiveSupport::TestCase
   end
 
   def test_find_by_multiple_columns
-    puts '- FindGroupByTest.test_find_by_multiple_columns(): nunu'
 
     i1 = Item.find_by( itemno: 'A')
     i2 = Item.find_by( itemno: 'B')
