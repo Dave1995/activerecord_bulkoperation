@@ -18,15 +18,49 @@ module ActiveRecord
   module Associations
 
     class CollectionProxy
-      def schedule_merge(record)
+      def schedule_merge(record)        
+        options = proxy_association.reflection.options
+        macro = proxy_association.reflection.macro                
+        if(macro == :has_many && options.empty?)
+          handle_has_many_schedule_merge(record)
+          return
+        end
+        if(proxy_association.is_a?(ActiveRecord::Associations::HasManyThroughAssociation))
+          handle_has_many_through_schedule_merge(record)
+          return
+        end        
+      end
+
+      def handle_has_many_schedule_merge(record)
         fk = proxy_association.reflection.foreign_key
         pk = proxy_association.reflection.active_record_primary_key
-        puts "RP DEBUG reflection #{proxy_association.reflection.inspect}"
-        puts "RP DEBUG fk #{fk.inspect} pk #{pk.inspect}"
         pk_val = proxy_association.owner.send(pk)
         record.send("#{fk}=",pk_val)        
         record.schedule_merge
       end
+
+      def handle_has_many_through_schedule_merge(record)
+        res = get_class_and_def(record)
+        obj = res[:join_obj]
+        record.schedule_merge
+        this_pk = record.send(res[:this_id])
+        remote_pk = proxy_association.owner.send(res[:parent_id])
+        obj.send("#{res[:this_join_id]}=",this_pk)
+        obj.send("#{res[:parent_join_id]}=",this_pk)
+        obj.schedule_merge
+      end
+
+      def get_class_and_def(record)
+        val = proxy_association.reflection.name.to_s.camelize
+        this_to_join_class = proxy_association.owner.class.const_get("HABTM_#{val}")
+        parent_to_join_class = proxy_association.klass.const_get("HABTM_#{proxy_association.owner.class.to_s.pluralize}")
+        parent_id = proxy_association.owner.class.primary_key
+        parent_join_id = parent_to_join_class.right_reflection.foreign_key
+        this_join_id = this_to_join_class.right_reflection.foreign_key
+        this_id = proxy_association.klass.primary_key
+        {:parent_id => parent_id,:parent_join_id => parent_join_id,:this_join_id => this_join_id,:this_id => this_id,:join_obj => this_to_join_class.new}
+      end
+
     end
 
     class JoinDependency # :nodoc:

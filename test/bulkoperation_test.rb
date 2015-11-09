@@ -110,13 +110,29 @@ class BulkoperationTest < ActiveSupport::TestCase
   end
 
   def test_schedule_merge_relation
-        group = Group.new
+    group = Group.new
     group.schedule_merge    
     test_obj = TestTable.new
     test_obj.author_name = 'test-1'
     group.test_tables.schedule_merge(test_obj)
     
     ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush  
+  end
+
+  def test_schedule_merge_has_and_belongs_to_many_relation
+    part = Part.new
+    part.schedule_merge
+    assembly = Assembly.new
+    part.assemblies.schedule_merge(assembly)
+    ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush
+    db_part = Part.first    
+    db_assembly = Assembly.first
+
+    assert_equal(1,db_part.assemblies.count)
+    assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
+  
+    assert_equal(1,db_assembly.parts.count)
+    assert_equal(db_part[:id],db_assembly.parts.first[:id])    
   end
 end
 

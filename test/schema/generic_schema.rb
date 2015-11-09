@@ -14,5 +14,19 @@ ActiveRecord::Schema.define do
     t.column :company, :integer
     t.timestamps null: true
   end
+  create_table :assemblies, :force => true do |t|
+    t.string :name
+    t.timestamps null: true
+  end
+
+  create_table :parts, :force => true do |t|
+    t.string :part_number
+    t.timestamps null: true
+  end
+
+  create_table :assemblies_parts, :force => true, id: false do |t|
+    t.belongs_to :assembly
+    t.belongs_to :part
+  end
   #add_foreign_key :test_tables, :groups
 end
