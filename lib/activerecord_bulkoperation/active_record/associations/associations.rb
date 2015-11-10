@@ -17,9 +17,13 @@ module ActiveRecord
 
   module Associations
 
+    module ManyToManyTables
+    end
+
     class CollectionProxy
       def schedule_merge(record)        
         options = proxy_association.reflection.options
+        #puts options.inspect
         macro = proxy_association.reflection.macro                
         if(macro == :has_many && options.empty?)
           handle_has_many_schedule_merge(record)
@@ -39,20 +43,56 @@ module ActiveRecord
         record.schedule_merge
       end
 
-      def handle_has_many_through_schedule_merge(record)
-        res = get_class_and_def(record)
-        obj = res[:join_obj]
+      def parent_reflection
+        proxy_association.reflection.parent_reflection[1]
+      end
+
+      def get_m_t_m_table_name
+        parent_reflection.options[:join_table] || [proxy_association.owner.class.table_name,proxy_association.klass.table_name].sort.join('_')
+      end
+
+      def parent_pk
+        parent_reflection.options[:primary_key] || proxy_association.owner.class.primary_key
+      end
+
+      def parent_association_pk
+        parent_reflection.options[:association_primary_key] || "#{proxy_association.owner.class.to_s.downcase}_id"
+      end
+
+      def child_pk
+        parent_reflection.options[:foreign_key] || proxy_association.klass.primary_key
+      end
+
+      def child_association_pk
+        parent_reflection.options[:association_foreign_key] || "#{proxy_association.klass.to_s.downcase}_id"
+      end
+
+      def handle_has_many_through_schedule_merge(record)        
+        join_model = Class.new(ActiveRecord::Base) do
+          class << self;           
+            attr_accessor :table_info
+          end
+          def self.table_name
+            table_info.table_name
+          end
+        end
+        join_model.table_info = OpenStruct.new(:table_name => get_m_t_m_table_name)        
+        unless(ManyToManyTables.const_defined?(get_m_t_m_table_name.camelize))
+          ManyToManyTables.const_set get_m_t_m_table_name.camelize,join_model
+        end
+        c = ManyToManyTables.const_get get_m_t_m_table_name.camelize
         record.schedule_merge
-        this_pk = record.send(res[:this_id])
-        remote_pk = proxy_association.owner.send(res[:parent_id])
-        obj.send("#{res[:this_join_id]}=",this_pk)
-        obj.send("#{res[:parent_join_id]}=",this_pk)
+        obj = c.new
+        obj.send("#{parent_association_pk}=",proxy_association.owner.send(parent_pk))
+        obj.send("#{child_association_pk}=",record.send(child_pk))
         obj.schedule_merge
       end
 
       def get_class_and_def(record)
         val = proxy_association.reflection.name.to_s.camelize
+        puts proxy_association.owner.class.const_get("HABTM_RelatedProducts").inspect
         this_to_join_class = proxy_association.owner.class.const_get("HABTM_#{val}")
+        #puts proxy_association.reflection.delegate_reflection
         parent_to_join_class = proxy_association.klass.const_get("HABTM_#{proxy_association.owner.class.to_s.pluralize}")
         parent_id = proxy_association.owner.class.primary_key
         parent_join_id = parent_to_join_class.right_reflection.foreign_key

@@ -134,5 +134,43 @@ class BulkoperationTest < ActiveSupport::TestCase
     assert_equal(1,db_assembly.parts.count)
     assert_equal(db_part[:id],db_assembly.parts.first[:id])    
   end
+
+  def test_schedule_merge_has_and_belongs_to_many_relation_custom_table_and_columns
+    
+    course = Course.new
+    course.course_id = 10
+    course.schedule_merge
+    student = Student.new
+    student.student_id = 12
+    course.students.schedule_merge(student)
+    ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush
+    return 
+    db_part = Course.first    
+    db_assembly = Assembly.first
+
+    assert_equal(1,db_part.assemblies.count)
+    assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
+  
+    assert_equal(1,db_assembly.parts.count)
+    assert_equal(db_part[:id],db_assembly.parts.first[:id])    
+  end
+
+  def test_schedule_merge_has_and_belongs_to_many_relation_self_join    
+    product = Product.new
+    product2 = Product.new
+    product.schedule_merge
+    product.related_products.schedule_merge(product2)
+    ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush
+    return 
+    db_part = Course.first    
+    db_assembly = Assembly.first
+
+    assert_equal(1,db_part.assemblies.count)
+    assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
+  
+    assert_equal(1,db_assembly.parts.count)
+    assert_equal(db_part[:id],db_assembly.parts.first[:id])    
+  end
+
 end
 
