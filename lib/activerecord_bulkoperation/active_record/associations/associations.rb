@@ -80,6 +80,9 @@ module ActiveRecord
         unless(ManyToManyTables.const_defined?(get_m_t_m_table_name.camelize))
           ManyToManyTables.const_set get_m_t_m_table_name.camelize,join_model
         end
+        puts "RP DEBUG child_pk: #{child_pk} parent_pk: #{parent_pk}"
+        puts "RP DEBUG child_association_pk: #{child_association_pk} parent_association_pk: #{parent_association_pk}"
+        puts "RP DEBUG table_name: #{get_m_t_m_table_name}"
         c = ManyToManyTables.const_get get_m_t_m_table_name.camelize
         record.schedule_merge
         obj = c.new
