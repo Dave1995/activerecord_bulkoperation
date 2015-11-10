@@ -173,6 +173,7 @@ module ActiveRecord
         count
       end
 
+      public
       def insert_on_missing_group( keys, group, options = {} )
 
         #fail 'the give key array is empty' if keys.empty?
@@ -217,8 +218,7 @@ module ActiveRecord
         result
 
       end
-
-      public
+      
       def delete_group(group, options = {})
         check_group(group)
 
