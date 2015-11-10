@@ -88,19 +88,6 @@ module ActiveRecord
         obj.schedule_merge
       end
 
-      def get_class_and_def(record)
-        val = proxy_association.reflection.name.to_s.camelize
-        puts proxy_association.owner.class.const_get("HABTM_RelatedProducts").inspect
-        this_to_join_class = proxy_association.owner.class.const_get("HABTM_#{val}")
-        #puts proxy_association.reflection.delegate_reflection
-        parent_to_join_class = proxy_association.klass.const_get("HABTM_#{proxy_association.owner.class.to_s.pluralize}")
-        parent_id = proxy_association.owner.class.primary_key
-        parent_join_id = parent_to_join_class.right_reflection.foreign_key
-        this_join_id = this_to_join_class.right_reflection.foreign_key
-        this_id = proxy_association.klass.primary_key
-        {:parent_id => parent_id,:parent_join_id => parent_join_id,:this_join_id => this_join_id,:this_id => this_id,:join_obj => this_to_join_class.new}
-      end
-
     end
 
     class JoinDependency # :nodoc:
