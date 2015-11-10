@@ -20,27 +20,50 @@ module ActiveRecord
     module ManyToManyTables
     end
 
-    class CollectionProxy
+    class CollectionProxy       
+      
       def schedule_merge(record)        
         options = proxy_association.reflection.options
-        #puts options.inspect
-        macro = proxy_association.reflection.macro                
-        if(macro == :has_many && options.empty?)
-          handle_has_many_schedule_merge(record)
-          return
-        end
+        puts options.inspect
+        macro = proxy_association.reflection.macro
+        puts "macro #{macro}"                
         if(proxy_association.is_a?(ActiveRecord::Associations::HasManyThroughAssociation))
           handle_has_many_through_schedule_merge(record)
           return
-        end        
+        end  
+        if(macro == :has_many)
+          handle_has_many_schedule_merge(record)
+          return
+        end      
       end
 
       def handle_has_many_schedule_merge(record)
-        fk = proxy_association.reflection.foreign_key
-        pk = proxy_association.reflection.active_record_primary_key
-        pk_val = proxy_association.owner.send(pk)
-        record.send("#{fk}=",pk_val)        
+        
+        pk = proxy_association.reflection.options[:primary_key] || proxy_association.owner.class.primary_key
+        fk = proxy_association.reflection.options[:foreign_key] || "#{proxy_association.owner.class.to_s.underscore.downcase}_id"
+        if(pk.is_a?(Array))
+          puts "is a array"
+          pk.each do |pk_item|
+            pk_item_val = proxy_association.owner[pk_item.to_s]
+            puts "pk_item_val #{pk_item_val}"
+            record.send("#{pk_item.to_s}=",pk_item_val)
+          end
+        else
+          pk_val = proxy_association.owner[pk.to_s]        
+          record.send("#{fk}=",pk_val) 
+        end
+        
+        #fk = proxy_association.reflection.foreign_key
+        #pk = proxy_association.reflection.active_record_primary_key
+        #pk_val = proxy_association.owner[pk.to_s]
+        #puts "fk: #{fk} pk_val #{pk_val}"
+        #record.send("#{fk}=",pk_val) 
+        puts record.inspect   
+        puts proxy_association.owner.inspect  
         record.schedule_merge
+        puts target.inspect        
+        self << record
+        puts target.inspect
       end
 
       def parent_reflection
@@ -56,7 +79,7 @@ module ActiveRecord
       end
 
       def parent_association_pk
-        parent_reflection.options[:association_primary_key] || "#{proxy_association.owner.class.to_s.downcase}_id"
+        parent_reflection.options[:association_primary_key] || "#{proxy_association.owner.class.to_s.underscore.downcase}_id"
       end
 
       def child_pk
@@ -64,9 +87,15 @@ module ActiveRecord
       end
 
       def child_association_pk
-        parent_reflection.options[:association_foreign_key] || "#{proxy_association.klass.to_s.downcase}_id"
+        parent_reflection.options[:association_foreign_key] || "#{proxy_association.klass.to_s.underscore.downcase}_id"
       end
-
+      
+      #TODO remove
+      alias_method :count_without_merges, :count
+      def count
+        count_without_merges + ( @internal_new_count.to_i)
+      end
+      
       def handle_has_many_through_schedule_merge(record)        
         join_model = Class.new(ActiveRecord::Base) do
           class << self;           
