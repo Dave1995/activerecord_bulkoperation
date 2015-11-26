@@ -20,7 +20,9 @@ module ActiveRecord
       end
 
       def sequence_exists?(name)
-        connection.find_by_sequence_name_sql_array(name).nil? == false
+        arr = connection.find_by_sequence_name_sql_array(name)
+        sql = sanitize_sql(arr)
+        find_by_sql(sql).count == 1
       end
 
 
