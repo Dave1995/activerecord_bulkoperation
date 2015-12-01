@@ -24,9 +24,7 @@ module ActiveRecord
       
       def schedule_merge(record)        
         options = proxy_association.reflection.options
-        puts options.inspect
         macro = proxy_association.reflection.macro
-        puts "macro #{macro}"                
         if(proxy_association.is_a?(ActiveRecord::Associations::HasManyThroughAssociation))
           handle_has_many_through_schedule_merge(record)
           return
@@ -38,14 +36,12 @@ module ActiveRecord
       end
 
       def handle_has_many_schedule_merge(record)
-        
         pk = proxy_association.reflection.options[:primary_key] || proxy_association.owner.class.primary_key
         fk = proxy_association.reflection.options[:foreign_key] || "#{proxy_association.owner.class.to_s.underscore.downcase}_id"
         if(pk.is_a?(Array))
           puts "is a array"
           pk.each do |pk_item|
             pk_item_val = proxy_association.owner[pk_item.to_s]
-            puts "pk_item_val #{pk_item_val}"
             record.send("#{pk_item.to_s}=",pk_item_val)
           end
         else
@@ -53,17 +49,8 @@ module ActiveRecord
           record.send("#{fk}=",pk_val) 
         end
         
-        #fk = proxy_association.reflection.foreign_key
-        #pk = proxy_association.reflection.active_record_primary_key
-        #pk_val = proxy_association.owner[pk.to_s]
-        #puts "fk: #{fk} pk_val #{pk_val}"
-        #record.send("#{fk}=",pk_val) 
-        puts record.inspect   
-        puts proxy_association.owner.inspect  
         record.schedule_merge
-        puts target.inspect        
         self << record
-        puts target.inspect
       end
 
       def parent_reflection
@@ -97,6 +84,10 @@ module ActiveRecord
       end
       
       def handle_has_many_through_schedule_merge(record)        
+     # TODO AK doesn't work well 
+        self << record 
+        
+=begin
         join_model = Class.new(ActiveRecord::Base) do
           class << self;           
             attr_accessor :table_info
@@ -109,15 +100,22 @@ module ActiveRecord
         unless(ManyToManyTables.const_defined?(get_m_t_m_table_name.camelize))
           ManyToManyTables.const_set get_m_t_m_table_name.camelize,join_model
         end
-        puts "RP DEBUG child_pk: #{child_pk} parent_pk: #{parent_pk}"
-        puts "RP DEBUG child_association_pk: #{child_association_pk} parent_association_pk: #{parent_association_pk}"
-        puts "RP DEBUG table_name: #{get_m_t_m_table_name}"
+        #puts "RP DEBUG child_pk: #{child_pk} parent_pk: #{parent_pk}"
+        #puts "RP DEBUG child_association_pk: #{child_association_pk} parent_association_pk: #{parent_association_pk}"
+        #puts "RP DEBUG table_name: #{get_m_t_m_table_name}"
         c = ManyToManyTables.const_get get_m_t_m_table_name.camelize
         record.schedule_merge
         obj = c.new
-        obj.send("#{parent_association_pk}=",proxy_association.owner.send(parent_pk))
-        obj.send("#{child_association_pk}=",record.send(child_pk))
+        puts "AK: #{obj.class.name}"
+        puts "AK: #{obj.class.name}.#{child_association_pk} = #{proxy_association.owner.class.name}.#{parent_pk} #{proxy_association.owner.send(parent_pk)}" 
+        puts "AK: #{obj.class.name}.#{child_association_pk} = #{record.class.name}.#{parent_association_pk} #{record.send(parent_association_pk)}" 
+        obj.send("#{parent_association_pk}=", proxy_association.owner.send(parent_pk))
+        obj.send("#{child_association_pk}=" , record.send(parent_association_pk))
         obj.schedule_merge
+        pp obj
+        @internal_new_count ||= 0 
+        @internal_new_count += 1
+=end
       end
 
     end
