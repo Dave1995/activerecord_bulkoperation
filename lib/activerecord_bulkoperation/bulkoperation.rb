@@ -187,7 +187,7 @@ module ActiveRecord
     end
 
     def set_id_from_sequence
-      self['id'] = self.class.next_sequence_value if self['id'].nil? && self.class.has_id_column?
+      @attributes.write_from_user( 'id', self.class.next_sequence_value ) if @attributes.fetch_value( 'id' ).nil? 
     end
 
     def optimistic_update
