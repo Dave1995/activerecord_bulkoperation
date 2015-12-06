@@ -24,7 +24,7 @@ module ActiveRecord
         # to recurse is golden, to transpose ... divine!
         i = 0
         (array_size*tuple_size).times do
-          values[i/tuple_size][i%tuple_size] = args.values[i%tuple_size][i/tuple_size]
+          values[i/tuple_size][i%tuple_size] = conditions.values[i%tuple_size][i/tuple_size]
           i += 1
         end
 
