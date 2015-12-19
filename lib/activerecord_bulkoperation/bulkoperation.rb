@@ -186,8 +186,16 @@ module ActiveRecord
       self
     end
 
+    # if id column is nil a value will be fetched from the sequence and set to the id property 
     def set_id_from_sequence
-      @attributes.write_from_user( 'id', self.class.next_sequence_value ) if self.class.has_id_column? && @attributes.fetch_value( 'id' ).nil?
+      if self.class.has_id_column? && @attributes.fetch_value( 'id' ).nil?
+        new_id = self.class.next_sequence_value
+        if self.class.primary_key == 'id'
+          self.id = new_id
+        else
+          @attributes.write_from_user( 'id', new_id )
+        end
+      end
     end
 
     def optimistic_update
