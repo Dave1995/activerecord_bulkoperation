@@ -39,7 +39,7 @@ module ActiveRecord
         pk = proxy_association.reflection.options[:primary_key] || proxy_association.owner.class.primary_key
         fk = proxy_association.reflection.options[:foreign_key] || "#{proxy_association.owner.class.to_s.underscore.downcase}_id"
         if(pk.is_a?(Array))
-          puts "is a array"
+          #puts "is a array"
           pk.each do |pk_item|
             pk_item_val = proxy_association.owner[pk_item.to_s]
             record.send("#{pk_item.to_s}=",pk_item_val)
