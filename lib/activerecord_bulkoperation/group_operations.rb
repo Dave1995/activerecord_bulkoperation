@@ -53,7 +53,6 @@ module ActiveRecord
       def foreign_master_tables
         @foreign_master_tables ||= find_foreign_master_tables(table_name)
       end
-      private
 
       def check_group(group)
         fail ArgumentError.new("Array expected. Got #{group.class.name}.") unless group.is_a? Array or group.is_a? Set or group.is_a? ActiveRecord::Relation
