@@ -29,6 +29,10 @@ module ActiveRecord
           close
         end
 
+        def after_rollback
+          close
+        end
+
         def close
 
           @scheduled_merges.values.each do |objects|
