@@ -30,7 +30,7 @@ module ActiveRecord
 end
 
 # if MRI or YARV
-puts "RUBY_ENGINE=#{RUBY_ENGINE}, ORACLE_ENHANCED_CONNECTION=#{ORACLE_ENHANCED_CONNECTION}"
+#puts "RUBY_ENGINE=#{RUBY_ENGINE}, ORACLE_ENHANCED_CONNECTION=#{ORACLE_ENHANCED_CONNECTION}"
 if !defined?(RUBY_ENGINE) || RUBY_ENGINE == 'ruby'
   ORACLE_ENHANCED_CONNECTION = :oci if ORACLE_ENHANCED_CONNECTION != :oci
   require 'activerecord_bulkoperation/connection_adapters/oracle_enhanced/oci_connection'
