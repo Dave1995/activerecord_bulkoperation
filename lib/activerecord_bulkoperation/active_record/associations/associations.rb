@@ -151,7 +151,7 @@ module ActiveRecord
 
       class JoinBase 
         attr_accessor :cached_record
-        def extract_record(row)
+        def extract_record(row,column_names_with_alias)
           # if the :select option is set, only the selected field should be extracted
           # column_names_with_alias.inject({}){|record, (cn, an)| record[cn] = row[an] if row.has_key?(an); record}
           record = {}
