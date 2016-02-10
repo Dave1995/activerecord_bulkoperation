@@ -193,10 +193,12 @@ module ActiveRecord
         if self.class.primary_key == 'id'
           self.id = new_id
         else
-          @attributes.write_from_user( 'id', new_id )
+          id_will_change!                                 # <- neu
+	  @attributes.write_from_user( 'id', new_id )
         end
       end
     end
+
 
     def optimistic_update
       fail NoPersistentRecord.new if  @new_record
