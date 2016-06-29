@@ -1,3 +1,7 @@
+#  
+#
+# Author:: Andre Kullmann
+#
 module ActiveRecord
   module Bulkoperation
     module Util

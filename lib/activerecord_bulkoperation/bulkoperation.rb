@@ -16,7 +16,7 @@ module ActiveRecord
       end
 
       def has_id_column?
-        @has_id_column ||= columns_hash.key?('id')# and oracle?
+        @has_id_column ||= columns_hash.key?('id')
       end
 
       def sequence_exists?(name)
@@ -56,24 +56,11 @@ module ActiveRecord
         sql = sanitize_sql([sql, table_name.upcase])
         find_by_sql(sql)
       end
-=begin
-      def find_each_by_sql(sql, &block)
-        connection.select_each(sanitize_sql(sql), "#{name} Load") { |record| yield instantiate(record,{}) }
-      end
-=end
+
       def extract_options_from_args!(args) #:nodoc:
         args.last.is_a?(Hash) ? args.pop : {}
       end
-=begin
-      def find_each(*args)
-        a = []
-        a << :all unless args.first == :all
-        a.concat(args)
-        find( *a ).each do |r|
-          yield r if r 
-        end 
-      end
-=end
+
       def build_delete_by_primary_key_sql
         keys = primary_key_columns
 
@@ -143,17 +130,19 @@ module ActiveRecord
 
     # Checks if a active record object was changed and if schedule if for DB merge
     #
-    # =====Parameters
-    # * *-*
-    # =====Return value
-    # * *self*
-    def schedule_merge_on_change
+    # args - Hash 
+    # 
+    # return - self
+    def schedule_merge_on_change( args={} )
       if orginal_selected_record.nil?
         schedule_merge
         return self
       end
 
+      ignore_columns = args[:ignore_columns] || []
+
       attributes.each_pair do |key, value|
+        next if ignore_columns.include?(key)
         if value != orginal_selected_record[key]
           schedule_merge
           return self

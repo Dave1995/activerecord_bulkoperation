@@ -9,9 +9,6 @@ module ActiveRecord
           # disable this feature for jruby
         end
 
-        #@@sql_log = AmosBase::Util::Logging::Log.get('sql')
-        #cattr_reader :sql_log
-
         def execute_batch_update(sql, types, values, optimistic = true)
           fail ArgumentError.new('String expected') unless sql.is_a? String
 
@@ -28,8 +25,6 @@ module ActiveRecord
           unless connection.adapter_name == 'Oracle' || connection.adapter_name == 'OracleEnhanced'
             fail "Operation is provided only on Oracle connections. (adapter_name is #{connection.adapter_name})"
           end
-
-          #AmosBase::Util::Context.get.model_name = name
 
           stmt = connection.raw_connection.prepareStatement(sql)
 
@@ -53,7 +48,6 @@ module ActiveRecord
 
             fail ExternalDataChange.new(sql) if count != values.count and optimistic
 
-            #sql_log.debug("#{sql} affected rows: #{count}")
           rescue Exception => e
             exc = e
             while exc.kind_of?(Java.java.lang.Exception) and exc.cause
@@ -62,7 +56,6 @@ module ActiveRecord
             raise exc
           ensure
             stmt.close
-            #AmosBase::Util::Context.get.model_name = nil
           end
 
           count

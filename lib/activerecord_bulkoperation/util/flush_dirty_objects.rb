@@ -1,3 +1,8 @@
+# It's used to store the modified/deleted entity objects at transaction level. 
+# Before the transaction will be closed the stored enities will be send to the database.
+#
+# Author:: Andre Kullmann
+#
 module ActiveRecord
   module Bulkoperation
     module Util

@@ -33,7 +33,6 @@ module ActiveRecord # :nodoc:
         @timeout = 5
         connection = super_checkout
         connection.clear_scheduled_operations if connection.respond_to?('clear_scheduled_operations')
-        start_plsql_profiling(connection)
         connection
       end
 
@@ -42,37 +41,9 @@ module ActiveRecord # :nodoc:
       def checkin(connection)
         connection.clear_scheduled_operations if connection.respond_to?('clear_scheduled_operations')
         connection.connection_listeners.each { |l| l.before_close if l.respond_to?('before_close') } if connection.respond_to?('connection_listeners')
-        stop_plsql_profiling(connection)
         super_checkin(connection)
       end
 
-      private
-
-      # if we are running for pl/sql coverage
-      # we need to start the profiler at checkout
-      # and stop the profiler at checkin
-      if ENV['SQL_COVERAGE_RUN'].present?
-
-        def start_plsql_profiling(connection)
-          run_comment = ENV['SQL_COVERAGE_RUN']
-          sql = "begin dbms_profiler.start_profiler('#{run_comment}'); end;"
-          connection.execute(sql)
-        end
-
-        def stop_plsql_profiling(connection)
-          sql = 'begin dbms_profiler.stop_profiler(); dbms_profiler.flush_data(); end;'
-          connection.execute(sql)
-        end
-
-      else
-
-        def start_plsql_profiling(connection)
-        end
-
-        def stop_plsql_profiling(connection)
-        end
-
-      end
     end
   end
 end

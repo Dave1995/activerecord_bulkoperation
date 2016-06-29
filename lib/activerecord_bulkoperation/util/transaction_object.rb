@@ -1,3 +1,7 @@
+# A TransactionObject belongs to a connection. It's like a singleton for each transaction.
+#
+# Author:: Andre Kullmann
+#
 module ActiveRecord
   module Bulkoperation
     module Util    
