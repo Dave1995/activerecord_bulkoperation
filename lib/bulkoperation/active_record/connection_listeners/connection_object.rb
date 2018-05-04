@@ -2,9 +2,9 @@
 #
 # Author:: Andre Kullmann
 #
-class ConnectionObject
+class Bulkoperation::ActiveRecord::ConnectionListeners::ConnectionObject
   def self.get
-    result = ActiveRecord::Base.connection.connection_listeners.select { |l| l.class == self }.first
+    result = ActiveRecord::Base.connection.connection_listeners.find { |l| l.class == self }
     unless result
       result = new
       ActiveRecord::Base.connection.connection_listeners << result

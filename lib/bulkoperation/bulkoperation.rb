@@ -1,5 +1,6 @@
 module ActiveRecord
-    class NoPersistentRecord < ActiveRecordError
+
+  class NoPersistentRecord < ActiveRecordError
   end
 
   class NoOrginalRecordFound < ActiveRecordError
