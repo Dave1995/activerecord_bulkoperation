@@ -2,7 +2,7 @@ oracle_enhanced:
   adapter: oracle_enhanced
   driver: oracle.jdbc.driver.OracleDriver
   url: jdbc:oracle:thin:@localhost:1521:ORCL
-  username: test
-  password: test
-  database: ORCL
+  username: sample
+  password: sample
+  database: XE
   pool: 200

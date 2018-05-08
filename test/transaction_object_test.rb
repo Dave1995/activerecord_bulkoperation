@@ -1,9 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/test_helper')
+require_relative 'test_helper'
 
 class TransactionObjectTest < ActiveSupport::TestCase
+  include Bulkoperation::ActiveRecord::ConnectionListeners
 
   def test_object_exists
-    obj = ActiveRecord::Bulkoperation::Util::TransactionObject.new
+    obj = TransactionObject.new
     assert_not_nil obj
   end
 

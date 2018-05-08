@@ -34,11 +34,6 @@ module ActiveRecord
         [sql, table_name.upcase]
       end
 
-      def find_by_sequence_name_sql_array(name)
-        sql = 'select * from user_sequences where sequence_name = ?'
-        [sql, name.upcase]
-      end
-
     end
   end
 end

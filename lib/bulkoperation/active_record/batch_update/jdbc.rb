@@ -1,7 +1,7 @@
 require 'java'
 
-module Bulkoperation::ActiveRecord::BatchUpdate::Jdbc
-
+class ActiveRecord::ConnectionAdapters::OracleEnhancedAdapter
+  
   def execute_batch_update(sql, types, values, optimistic = true)
     fail ArgumentError.new('String expected') unless sql.is_a? String
 

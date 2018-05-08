@@ -1,0 +1,4 @@
+require_relative 'optimistic_locking/dml_methods'
+require_relative 'optimistic_locking/stmt_builder'
+require_relative 'optimistic_locking/exceptions'
+require_relative 'optimistic_locking/ar_persistence_extension'

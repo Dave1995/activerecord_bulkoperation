@@ -1,3 +1,8 @@
+module Bulkoperation
+
+end  
+
+=begin
 module ActiveRecord
 
   class NoPersistentRecord < ActiveRecordError
@@ -259,3 +264,4 @@ module ActiveRecord
     alias_method :row_id, :rowid
   end
 end
+=end

@@ -1,14 +1,15 @@
-require File.expand_path(File.dirname(__FILE__) + '/test_helper')
+require_relative 'test_helper'
 
 class SequenceCacheTest < ActiveSupport::TestCase
+  include Bulkoperation::ActiveRecord
 
   def test_object_exists
-    obj = ActiveRecord::Bulkoperation::Util::SequenceCache.new('groups_seq')
+    obj = Sequences::Cache.new('groups_seq')
     assert_not_nil obj
   end
 
   def test_seq_cache_multi_thread
-    cache = ActiveRecord::Bulkoperation::Util::SequenceCache.new('groups_seq')
+    cache = Sequences::Cache.new('groups_seq')
     res1 = []
     res2 = []
     t = Thread.new do

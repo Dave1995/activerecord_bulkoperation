@@ -1,5 +1,5 @@
 
-require File.expand_path(File.dirname(__FILE__) + '/test_helper')
+require_relative 'test_helper'
 
 class FindGroupByTest < ActiveSupport::TestCase
 
@@ -53,12 +53,12 @@ class FindGroupByTest < ActiveSupport::TestCase
 
   def test_find_group_by_params_test
     column_set = [ :itemno, :sizen, :company ]
-    assert_raises { Item.where_tuple(nil, nil) }
-    assert_raises { Item.where_tuple(column_set, nil) }
-    assert_raises { Item.where_tuple([], nil) }
-    assert_raises { Item.where_tuple(['string', 'strang'], nil) }
-    assert_raises { Item.where_tuple(column_set, []) }
-    assert_raises { Item.where_tuple(column_set, ['strong']) }
+    assert_raises( ArgumentError ) { Item.where_tuple(nil, nil) }
+    assert_raises( ArgumentError ) { Item.where_tuple(column_set, nil) }
+    assert_raises( ArgumentError ) { Item.where_tuple([], nil) }
+    assert_raises( ArgumentError ) { Item.where_tuple(['string', 'strang'], nil) }
+    assert_raises( ArgumentError ) { Item.where_tuple(column_set, []) }
+    assert_raises( ArgumentError ) { Item.where_tuple(column_set, ['strong']) }
   end
 
   def test_find_group_by
@@ -129,4 +129,5 @@ class FindGroupByTest < ActiveSupport::TestCase
     assert_equal( 1, is.count)
     assert_equal( i1, is[0])
   end
+
 end

@@ -1,6 +1,6 @@
-module Bulkoperation::ActiveRecord::BatchUpdate::Oci
+class ActiveRecord::Base
 
-  def execute_batch_update(sql, types, values, optimistic = true)
+  def self.execute_batch_update(sql, types, values, optimistic = true)
     fail ArgumentError.new('String expected') unless sql.is_a? String
 
     types = [types] unless types.is_a? Array
@@ -61,7 +61,7 @@ module Bulkoperation::ActiveRecord::BatchUpdate::Oci
   end
 
   private
-  def get_value(value)          
+  def self.get_value(value)          
     if(value.respond_to? :value)            
       value.value
       else
@@ -69,7 +69,7 @@ module Bulkoperation::ActiveRecord::BatchUpdate::Oci
     end
   end
 
-  def bind(cursor, index, type, input_value)          
+  def self.bind(cursor, index, type, input_value)          
     value = get_value(input_value)          
     if type == :string
       cursor.bind_param(":#{index}", value, String)

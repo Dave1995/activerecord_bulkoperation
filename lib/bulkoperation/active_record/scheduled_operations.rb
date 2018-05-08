@@ -1,0 +1,7 @@
+module Bulkoperation::ActiveRecord::ScheduledOperations
+end
+require_relative 'scheduled_operations/connection_pool'
+require_relative 'scheduled_operations/entity_hash'
+require_relative 'scheduled_operations/flush_dirty_objects'
+require_relative 'scheduled_operations/oracle_enhanced_adapter'
+require_relative 'scheduled_operations/ar_base_extension'

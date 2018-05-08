@@ -1,9 +1,10 @@
-require File.expand_path(File.dirname(__FILE__) + '/test_helper')
+require_relative 'test_helper'
 
 class EntityHashTest < ActiveSupport::TestCase
+  include Bulkoperation::ActiveRecord::ScheduledOperations
 
   def test_object_exists
-    obj = ActiveRecord::Bulkoperation::Util::EntityHash.new
+    obj = EntityHash.new
     assert_not_nil obj
   end
 

@@ -1,13 +1,11 @@
 source 'https://rubygems.org'
 
-#gemspec
-
-version = ENV['AR_VERSION'] || "4.2"
-
-if version > "4.0"
-  gem "minitest"
+platforms :ruby do
+  gem 'ruby-oci8', '~> 2.1'
 end
 
-gem 'mocha'
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.6.0'
 
-eval_gemfile File.expand_path("../gemfiles/#{version}.gemfile", __FILE__)
+gem 'activerecord', '~> 4.2'
+
+gem "minitest"
