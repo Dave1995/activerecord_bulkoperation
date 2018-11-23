@@ -43,7 +43,7 @@ module ActiveRecord
         end
 
         def fetch
-          st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= #{@prefetch}")
+          st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= :a", "SQL", [[nil,@prefetch]])
           st.map {|r| r['id']}
         end
       end
