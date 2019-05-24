@@ -11,23 +11,31 @@ module ActiveRecord
             alias_method :create_savepoint_without_callback, :create_savepoint
 
             def commit_db_transaction
-              connection_listeners.each { |l| l.before_commit if l.respond_to?('before_commit') }          
+              # AKu a copy of the listener array is required, because the listener can remove can modify the array
+              connection_listeners.select{|l| l.respond_to?('before_commit') }.each{|l| l.before_commit}
+
               commit_db_transaction_without_callback
-              connection_listeners.each { |l| l.after_commit if l.respond_to?('after_commit') }
+
+              # AKu a copy of the listener array is required, because the listener can remove can modify the array
+              connection_listeners.select{|l| l.respond_to?('after_commit') }.each{|l| l.after_commit}
+
             end
             
             def rollback_db_transaction
               rollback_db_transaction_without_callback
-              connection_listeners.each { |l| l.after_rollback if l.respond_to?('after_rollback') }
+              # AKu a copy of the listener array is required, because the listener can remove can modify the array
+              connection_listeners.select{|l| l.respond_to?('after_rollback') }.each{|l| l.after_rollback}
             end
                     
             def rollback_to_savepoint(name = current_savepoint_name)
               rollback_to_savepoint_without_callback(name)
-              connection_listeners.each { |l| l.after_rollback_to_savepoint if l.respond_to?('after_rollback_to_savepoint') }
+              # AKu a copy of the listener array is required, because the listener can remove can modify the array
+              connection_listeners.select{|l| l.respond_to?('after_rollback_to_savepoint') }.each{|l| l.after_rollback_to_savepoint}
             end
                     
             def create_savepoint(name = current_savepoint_name)
-              connection_listeners.each { |l| l.before_create_savepoint if l.respond_to?('before_create_savepoint') }
+              # AKu a copy of the listener array is required, because the listener can remove can modify the array
+              connection_listeners.select{|l| l.respond_to?('before_create_savepoint') }.each{|l| l.before_create_savepoint}
               create_savepoint_without_callback(name)
             end
           end
