@@ -12,6 +12,8 @@ module ActiveRecord
           fail ArgumentError.new('Array expected') unless values.is_a? Array
           values = [values] unless values.select { |i| not i.is_a? Array }.empty?
 
+          return 0 if values.empty?
+
           unless values.select { |i| not i.count == types.count }.empty?
             fail ArgumentError.new('types.count must be equal to arr.count for every arr in values')
           end
@@ -114,9 +116,11 @@ module ActiveRecord
 
             result = cursor.exec_array
 
-            fail ExternalDataChange.new(sql) if result != values.count and optimistic
+            result_is_int = result.is_a? Integer
 
-            affected_rows += result
+            fail ExternalDataChange.new(sql) if result_is_int and result != values.count and optimistic
+
+            affected_rows += result_is_int ? result : 0
 
             connection.send(:log, sql, 'Update') {}
           ensure
