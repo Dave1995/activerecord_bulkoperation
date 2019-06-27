@@ -120,7 +120,7 @@ module ActiveRecord
 
             fail ExternalDataChange.new(sql) if result_is_int and result != values.count and optimistic
 
-            affected_rows += result_is_int ? result : 0
+            affected_rows += result_is_int ? result : cursor.row_count
 
             connection.send(:log, sql, 'Update') {}
           ensure
