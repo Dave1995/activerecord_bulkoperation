@@ -172,7 +172,7 @@ module ActiveRecord
 
         def bind_column(cursor, index, type, column)
           if type == :string
-            cursor.bind_param_array(":#{index}", column, String)
+            cursor.bind_param_array(":#{index}", column, String, get_max_string_length(column))
 
           elsif type == :integer
             cursor.bind_param_array(":#{index}", column, Fixnum)
@@ -187,6 +187,19 @@ module ActiveRecord
 
             fail ArgumentError.new("unsupported type #{type}")
           end
+        end
+
+        def get_max_string_length(column)
+          return nil if column.nil?
+
+          max_length = 0
+
+          column.each do |value|
+            next if value.nil?
+            max_length = value.length if value.length > max_length
+          end
+
+          return max_length > 0 ? max_length : nil
         end
 
         def get_date_type(value)
