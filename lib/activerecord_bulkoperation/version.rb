@@ -1,5 +1,5 @@
 module ActiveRecord
   module Bulkoperation
-    VERSION = "0.0.8"
+    VERSION = '5.0.0'
   end
 end

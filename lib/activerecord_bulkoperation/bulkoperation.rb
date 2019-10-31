@@ -1,5 +1,5 @@
 module ActiveRecord
-    class NoPersistentRecord < ActiveRecordError
+  class NoPersistentRecord < ActiveRecordError
   end
 
   class NoOrginalRecordFound < ActiveRecordError
@@ -52,7 +52,7 @@ module ActiveRecord
       end
 
       def self.find_detail_references(table_name)
-        arr = connection.find_detail_references_sql_array(table_name)
+        connection.find_detail_references_sql_array(table_name)
         sql = sanitize_sql([sql, table_name.upcase])
         find_by_sql(sql)
       end
@@ -208,7 +208,7 @@ module ActiveRecord
         types << type if c.null
       end
 
-      binds = self.class.columns.map { |c| read_attribute(c.name) }
+      binds = self.class.columns.map { |column| read_attribute(column.name) }
 
       get_optimistic_where_binds.each { |v| binds << v }
 
@@ -232,7 +232,7 @@ module ActiveRecord
       end
 
       self.class.execute_batch_update(sql, types, [binds])
-      end
+    end
 
     private
 

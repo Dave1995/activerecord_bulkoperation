@@ -32,7 +32,7 @@ module ActiveRecord
 
         def next_value_from_queue
 	        @queue.pop(true) 
-        rescue ThreadError => e
+        rescue ThreadError
           nil
         end
 
