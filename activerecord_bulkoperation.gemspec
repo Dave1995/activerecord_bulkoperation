@@ -16,8 +16,11 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = ActiveRecord::Bulkoperation::VERSION
 
-  gem.required_ruby_version = ">= 1.9.2"
+  gem.required_ruby_version = ">=2.5"
 
-  gem.add_runtime_dependency "activerecord", "~> 4.2"
+  gem.add_runtime_dependency "activerecord", "~> 5.0"
   gem.add_development_dependency "rake"
+  gem.add_development_dependency "mocha"
+  gem.add_development_dependency "minitest"
+  gem.add_development_dependency 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
 end
