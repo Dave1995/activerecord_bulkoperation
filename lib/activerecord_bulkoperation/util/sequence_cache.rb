@@ -43,7 +43,14 @@ module ActiveRecord
         end
 
         def fetch
-          st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= :a", "SQL", [[nil,@prefetch]])
+          if ActiveRecord::Bulkoperation::ActiveRecordVersion >= Gem::Version.new('5.0')
+            binds = [ ActiveRecord::Relation::QueryAttribute.new(
+              nil, @prefetch, ActiveRecord::Type::Integer.new
+            )]
+            st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= :a", "SQL", binds, prepare: true)
+          else
+            st = ActiveRecord::Base.connection.exec_query("SELECT #{@seq}.nextval id FROM dual connect by level <= :a", "SQL", [[nil, @prefetch]])            
+          end
           st.map {|r| r['id']}
         end
       end
