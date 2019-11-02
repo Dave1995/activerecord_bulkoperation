@@ -25,7 +25,7 @@ adapter = ENV["DB_ADAPTER"] || "oracle_enhanced"
 FileUtils.mkdir_p 'log'
 ActiveRecord::Base.logger = Logger.new("log/test.log")
 ActiveRecord::Base.logger.level = Logger::DEBUG
-ActiveRecord::Base.configurations['test'] = YAML.load_file(test_dir.join("database.yml"))[adapter]
+ActiveRecord::Base.configurations['test'] = YAML.load(ERB.new(File.read(test_dir.join("database.yml"))).result)[adapter]
 ActiveRecord::Base.default_timezone = :utc
 
 require "activerecord_bulkoperation"
