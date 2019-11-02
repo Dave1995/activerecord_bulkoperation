@@ -1,5 +1,5 @@
 # activerecord_bulkoperation
-
+AR 4.2, 5.0, 5.1 and 5.2 are supported
 ## Database Driver support
 currently only oracle_enhanced is supported
 
