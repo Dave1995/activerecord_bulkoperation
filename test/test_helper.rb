@@ -10,17 +10,13 @@ ENV["RAILS_ENV"] = "test"
 
 require "bundler"
 Bundler.setup
+Bundler.require
 
 require "active_record"
 require "active_record/fixtures"
 require "active_support/test_case"
 
-if ActiveSupport::VERSION::STRING < "4.1"
-  require 'test/unit'
-else
-  require 'active_support/testing/autorun'
-end
-
+require 'active_support/testing/autorun'
 require "mocha/test_unit"
 
 ActiveSupport::TestCase.test_order = :sorted
@@ -29,7 +25,7 @@ adapter = ENV["DB_ADAPTER"] || "oracle_enhanced"
 FileUtils.mkdir_p 'log'
 ActiveRecord::Base.logger = Logger.new("log/test.log")
 ActiveRecord::Base.logger.level = Logger::DEBUG
-ActiveRecord::Base.configurations['test'] = YAML.load_file(test_dir.join("database.yml"))[adapter]
+ActiveRecord::Base.configurations['test'] = YAML.load(ERB.new(File.read(test_dir.join("database.yml"))).result)[adapter]
 ActiveRecord::Base.default_timezone = :utc
 
 require "activerecord_bulkoperation"

@@ -1,8 +1,7 @@
 oracle_enhanced:
   adapter: oracle_enhanced
-  driver: oracle.jdbc.driver.OracleDriver
-  url: jdbc:oracle:thin:@localhost:1521:ORCL
-  username: test
-  password: test
-  database: ORCL
+  # url: jdbc:oracle:thin:@localhost:1521:XEPDB1
+  username: <%=ENV['DB_USER'] ||= "sample" %>
+  password: <%=ENV['DB_PASSWORD'] ||= "sample" %>
+  database: <%=ENV['DB_CONNECTION'] ||= '//localhost:1521/XEPDB1' %>
   pool: 200

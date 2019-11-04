@@ -73,7 +73,7 @@ class BulkoperationTest < ActiveSupport::TestCase
 
   def test_update_fk_relation
     #some problems during database creation and recreation
-    return
+    skip
     group = Group.new
     group.schedule_merge    
     test_obj = TestTable.new
@@ -104,8 +104,7 @@ class BulkoperationTest < ActiveSupport::TestCase
     assert_equal(0,TestTable.count)
     ActiveRecord::Base.connection.commit_db_transaction
     assert_equal(1,TestTable.count)
-    first = TestTable.first
-    assert_equal('test-1',test_obj.author_name)
+    assert_equal('test-1',TestTable.first.author_name)
     TestTable.delete_all    
   end
 
@@ -145,14 +144,14 @@ class BulkoperationTest < ActiveSupport::TestCase
     course.students.schedule_merge(student)
     ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush
     return 
-    db_part = Course.first    
-    db_assembly = Assembly.first
+    # db_part = Course.first    
+    # db_assembly = Assembly.first
 
-    assert_equal(1,db_part.assemblies.count)
-    assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
+    # assert_equal(1,db_part.assemblies.count)
+    # assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
   
-    assert_equal(1,db_assembly.parts.count)
-    assert_equal(db_part[:id],db_assembly.parts.first[:id])    
+    # assert_equal(1,db_assembly.parts.count)
+    # assert_equal(db_part[:id],db_assembly.parts.first[:id])    
   end
 
   def test_schedule_merge_has_and_belongs_to_many_relation_self_join    
@@ -162,14 +161,14 @@ class BulkoperationTest < ActiveSupport::TestCase
     product.related_products.schedule_merge(product2)
     ActiveRecord::Bulkoperation::Util::FlushDirtyObjects.get.flush
     return 
-    db_part = Course.first    
-    db_assembly = Assembly.first
+    # db_part = Course.first    
+    # db_assembly = Assembly.first
 
-    assert_equal(1,db_part.assemblies.count)
-    assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
+    # assert_equal(1,db_part.assemblies.count)
+    # assert_equal(db_assembly[:id],db_part.assemblies.first[:id])
   
-    assert_equal(1,db_assembly.parts.count)
-    assert_equal(db_part[:id],db_assembly.parts.first[:id])    
+    # assert_equal(1,db_assembly.parts.count)
+    # assert_equal(db_part[:id],db_assembly.parts.first[:id])    
   end
 
 end

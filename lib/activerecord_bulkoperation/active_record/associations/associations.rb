@@ -23,7 +23,7 @@ module ActiveRecord
     class CollectionProxy       
       
       def schedule_merge(record)        
-        options = proxy_association.reflection.options
+        proxy_association.reflection.options
         macro = proxy_association.reflection.macro
         if(proxy_association.is_a?(ActiveRecord::Associations::HasManyThroughAssociation))
           handle_has_many_through_schedule_merge(record)
@@ -80,7 +80,11 @@ module ActiveRecord
       #TODO remove
       alias_method :count_without_merges, :count
       def count
-        count_without_merges + ( @internal_new_count.to_i)
+        if defined?(@internal_new_count)
+          count_without_merges + ( @internal_new_count.to_i)
+        else
+          count_without_merges
+        end
       end
       
       def handle_has_many_through_schedule_merge(record)        

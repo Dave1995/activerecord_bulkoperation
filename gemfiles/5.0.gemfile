@@ -1,0 +1,7 @@
+gem 'activerecord-oracle_enhanced-adapter', '~> 1.7.0'
+
+platforms :ruby do
+  gem 'ruby-oci8', '~> 2.2'
+end
+
+gem 'activerecord', '~> 5.0'

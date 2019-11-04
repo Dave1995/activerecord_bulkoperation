@@ -158,7 +158,7 @@ module ActiveRecord
             cursor.bind_param(":#{index}", value, String)
 
           elsif type == :integer
-            cursor.bind_param(":#{index}", value, Fixnum)
+            cursor.bind_param(":#{index}", value, Integer)
 
           elsif type == :float
             cursor.bind_param(":#{index}", value, Float)
@@ -177,7 +177,7 @@ module ActiveRecord
             cursor.bind_param_array(":#{index}", column, String)
 
           elsif type == :integer
-            cursor.bind_param_array(":#{index}", column, Fixnum)
+            cursor.bind_param_array(":#{index}", column, Integer)
 
           elsif type == :float
             cursor.bind_param_array(":#{index}", column, Float)

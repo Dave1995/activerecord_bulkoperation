@@ -1,13 +1,10 @@
 source 'https://rubygems.org'
 
-#gemspec
+# gemspec
 
 version = ENV['AR_VERSION'] || "4.2"
 
-if version > "4.0"
-  gem "minitest"
-end
-
+gem "minitest"
 gem 'mocha'
-
+gem 'rake'
 eval_gemfile File.expand_path("../gemfiles/#{version}.gemfile", __FILE__)

@@ -1,13 +1,18 @@
-#
-#
-#
+module ActiveRecord
+  module Bulkoperation
+    ActiveRecordVersion = Gem.loaded_specs['activerecord'].version
+  end
+end
+
 class ActiveRecord::Base
   class << self
+
     def establish_connection_with_activerecord_bulkoperation(*args)
       establish_connection_without_activerecord_bulkoperation(*args)
       ActiveSupport.run_load_hooks(:active_record_connection_established, connection_pool)
     end
-    alias_method_chain :establish_connection, :activerecord_bulkoperation
+    alias_method :establish_connection_without_activerecord_bulkoperation, :establish_connection
+    alias_method :establish_connection, :establish_connection_with_activerecord_bulkoperation
   end
 end
 

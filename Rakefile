@@ -7,7 +7,7 @@ require 'rake/testtask'
 namespace :display do
   task :notice do
     puts
-    puts "To run tests you must supply the adapter, see rake -T for more information."
+    puts "To run tests you must supply the adapter, see rake -T for more information. e.g. rake test:oracle_enhanced"
     puts
   end
 end
