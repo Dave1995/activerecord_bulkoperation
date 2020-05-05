@@ -12,6 +12,14 @@ module ActiveRecord
           record.save_original
           record
         end
+
+        alias_method :instantiate_instant_of_without_save_original, :instantiate_instance_of
+
+        def instantiate_instance_of(klass, attributes, column_types = {}, &block)
+          record = instantiate_instant_of_without_save_original(klass, attributes, column_types)
+          record.save_original
+          record 
+        end
     end
   end
 
