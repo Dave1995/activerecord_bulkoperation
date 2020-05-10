@@ -1,18 +1,18 @@
 require 'active_record/associations'
 
 module ActiveRecord
-
   module Persistence
     module ClassMethods
+      
+      alias_method :instantiate_without_save_original, :instantiate
 
-        alias_method :instantiate_without_save_original, :instantiate
+      def instantiate(attributes, column_types = {})
+        record = instantiate_without_save_original(attributes, column_types)
+        record.save_original
+        record
+      end
 
-        def instantiate(attributes, column_types = {})
-          record = instantiate_without_save_original(attributes, column_types)
-          record.save_original
-          record
-        end
-
+      if Rails.gem_version >= Rails.gem_version('6.0')
         alias_method :instantiate_instant_of_without_save_original, :instantiate_instance_of
 
         def instantiate_instance_of(klass, attributes, column_types = {}, &block)
@@ -20,6 +20,7 @@ module ActiveRecord
           record.save_original
           record 
         end
+      end
     end
   end
 
@@ -163,16 +164,18 @@ module ActiveRecord
 
       class JoinBase 
         attr_accessor :cached_record
-        def extract_record(row,column_names_with_alias)
-          # if the :select option is set, only the selected field should be extracted
-          # column_names_with_alias.inject({}){|record, (cn, an)| record[cn] = row[an] if row.has_key?(an); record}
-          record = {}
-          column_names_with_alias.each { |(cn, an)| record[cn] = row[an] if row.key?(an) }
-          record
-        end
-        alias_method :instantiate_without_save_original, :instantiate        
-        def instantiate(row, aliases)          
-          instantiate_without_save_original(row, aliases)
+        if Rails.gem_version < Gem::Version.new('6.0')
+          def extract_record(row,column_names_with_alias)
+            # if the :select option is set, only the selected field should be extracted
+            # column_names_with_alias.inject({}){|record, (cn, an)| record[cn] = row[an] if row.has_key?(an); record}
+            record = {}
+            column_names_with_alias.each { |(cn, an)| record[cn] = row[an] if row.key?(an) }
+            record
+          end
+          alias_method :instantiate_without_save_original, :instantiate        
+          def instantiate(row, aliases)          
+            instantiate_without_save_original(row, aliases)
+          end
         end
       end
     end
