@@ -12,7 +12,7 @@ module ActiveRecord
         record
       end
 
-      if Rails.gem_version >= Rails.gem_version('6.0')
+      if Rails.gem_version >= Gem::Version.new('6.0')
         alias_method :instantiate_instant_of_without_save_original, :instantiate_instance_of
 
         def instantiate_instance_of(klass, attributes, column_types = {}, &block)
