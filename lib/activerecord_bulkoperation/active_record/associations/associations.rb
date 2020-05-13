@@ -12,7 +12,7 @@ module ActiveRecord
         record
       end
 
-      if Rails.gem_version >= Rails.gem_version('6.0')
+      if ActiveRecord.gem_version >= Gem::Version.new('6.0')
         alias_method :instantiate_instant_of_without_save_original, :instantiate_instance_of
 
         def instantiate_instance_of(klass, attributes, column_types = {}, &block)
@@ -164,7 +164,7 @@ module ActiveRecord
 
       class JoinBase 
         attr_accessor :cached_record
-        if Rails.gem_version < Gem::Version.new('6.0')
+        if ActiveRecord.gem_version < Gem::Version.new('6.0')
           def extract_record(row,column_names_with_alias)
             # if the :select option is set, only the selected field should be extracted
             # column_names_with_alias.inject({}){|record, (cn, an)| record[cn] = row[an] if row.has_key?(an); record}
